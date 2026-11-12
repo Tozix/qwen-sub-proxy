@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 'stable'
+
+      - name: Build
+        run: go build ./...
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Test
+        run: go test ./...
+
+      - name: Check that the module has no external dependencies
+        run: |
+          if [ -f go.sum ]; then
+            echo "go.sum must not exist: the project must only use the standard library"
+            exit 1
+          fi
+          test "$(go list -m all | wc -l | tr -d ' ')" = "1"

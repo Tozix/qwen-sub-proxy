@@ -1,0 +1,6 @@
+# Build output
+/qwen-sub-proxy
+
+# Local state (credentials live outside the repository, this is a safety net)
+/credentials.json
+/client-key
